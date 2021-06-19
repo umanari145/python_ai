@@ -8,3 +8,6 @@ https://github.com/ghmagazine/python_stat_sample
 ```
 pip install -r requirements.txt
 ```
+
+lesson1 イントロ
+lesson2 一次元データの整理
