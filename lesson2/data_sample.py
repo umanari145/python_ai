@@ -27,3 +27,8 @@ simple_score=np.array(df2['英語'])
 deviation=simple_score-np.mean(simple_score)
 print(deviation)
 print(np.mean(deviation))
+
+df2['偏差']=deviation
+#df2['偏差二乗']=deviation ** 2
+df2['偏差二乗']=np.square(deviation)
+print(df2)
