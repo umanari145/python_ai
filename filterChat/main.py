@@ -1,6 +1,8 @@
 import os
 from dotenv import load_dotenv
+import pandas as pd
 import database
+import analysis
 
 # .envファイルの内容を読み込みます
 load_dotenv()
@@ -13,6 +15,12 @@ db = database.database({
     'DB_PASS' : os.environ['DB_PASS']
 })
 #db.select("select * from month")
-
-db.select("select * from rewards where user_id = %s", [102])
+rewards = db.select("select target_month, SUM(dmm_point + no_dmm_point + other_point) as total_point from rewards where is_delete = 0 group by target_month" )
+for reward in rewards:
+    reward['target_month'] = str(reward['target_month'])[2:4] + "/" + str(reward["target_month"])[4:7]
 db.close()
+
+ana = analysis.analysis()
+ana.rewards(rewards)
+
+

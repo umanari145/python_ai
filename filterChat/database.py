@@ -1,10 +1,5 @@
   
-import os
 import mysql.connector
-
-
-
-
 
 class database:
 
@@ -19,11 +14,12 @@ class database:
 
     def connect(self):
         try:
-            self._cnn = mysql.connector.connect(host=os.environ['DB_HOST'],
-                                port=3306,
-                                db=os.environ['DB_NAME'],
-                                user=os.environ['DB_USER'],
-                                passwd=os.environ['DB_PASS'],
+            self._cnn = mysql.connector.connect(
+                                host = self._dbHost,
+                                port = 3306,
+                                db = self._dbName,
+                                user = self._dbUser,
+                                passwd = self._dbPass,
                                 )
             self._cur = self._cnn.cursor(dictionary=True)
             self._cur.execute("SET NAMES latin1")
@@ -37,8 +33,7 @@ class database:
         try:
             self._cur.execute(sql, args)
             rows = self._cur.fetchall()
-            for row in rows:
-                print(row)
+            return rows
         except (mysql.connector.errors.ProgrammingError) as e:
             print(e)
 

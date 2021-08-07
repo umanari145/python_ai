@@ -4,3 +4,4 @@ sklearn
 matplotlib
 python-dotenv
 mysql-connector
+sqlalchemy
