@@ -1,3 +1,6 @@
 .bash_history
 .cache
 python_lesson
+.env
+__pycache__
+.DS_Store
