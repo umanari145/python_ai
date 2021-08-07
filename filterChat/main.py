@@ -15,6 +15,6 @@ db = database.database({
     'DB_PASS' : os.environ['DB_PASS']
 })
 ana = analysis.analysis(db)
-#ana.rewardsCheck()
-ana.memberCheck()
+ana.rewardsCheck()
+#ana.memberCheck()
 
