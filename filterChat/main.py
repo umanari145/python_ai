@@ -16,5 +16,5 @@ db = database.database({
 })
 ana = analysis.analysis(db)
 #ana.rewardsCheck()
-ana.memberCheck()
-
+#ana.memberCheck()
+ana.oligopoly()
