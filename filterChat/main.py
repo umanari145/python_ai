@@ -14,13 +14,7 @@ db = database.database({
     'DB_USER' : os.environ['DB_USER'],
     'DB_PASS' : os.environ['DB_PASS']
 })
-#db.select("select * from month")
-rewards = db.select("select target_month, SUM(dmm_point + no_dmm_point + other_point) as total_point from rewards where is_delete = 0 group by target_month" )
-for reward in rewards:
-    reward['target_month'] = str(reward['target_month'])[2:4] + "/" + str(reward["target_month"])[4:7]
-db.close()
-
-ana = analysis.analysis()
-ana.rewards(rewards)
-
+ana = analysis.analysis(db)
+#ana.rewardsCheck()
+ana.memberCheck()
 
