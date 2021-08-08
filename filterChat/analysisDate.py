@@ -2,6 +2,7 @@ import pandas as pd
 import io
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
+from matplotlib.ticker import FuncFormatter
 from sklearn.linear_model import LinearRegression
 from itertools import groupby
 
@@ -9,32 +10,6 @@ class analysisDate:
 
     def __init__(self, db):
         self._db = db
-
-    def sample(self):
-        data = """date,value
-        2018-12-01 00,15
-        2018-12-01 01,30
-        2018-12-01 02,25
-        2018-12-01 03,18
-        2018-12-01 04,9
-        2018-12-01 05,22
-        2018-12-01 06,34
-        2018-12-01 07,33
-        2018-12-01 08,28
-        2018-12-01 09,22
-        2018-12-01 10,26
-        2018-12-01 11,31"""
-        df = pd.read_csv(io.StringIO(data), parse_dates=[0])
-
-        fig = plt.figure()
-        ax = fig.add_subplot(1, 1, 1)
-        ax.plot(df['date'], df['value'])
-
-        ##以下をカスタマイズする
-        daysFmt = mdates.DateFormatter('%m/%d %H:%M')
-        ax.xaxis.set_major_formatter(daysFmt)
-        fig.autofmt_xdate()
-        plt.savefig('images/samepl_img.png')
 
     def rewardsCheck(self):
 
@@ -59,25 +34,39 @@ class analysisDate:
 
         #日付型にしないとplot時に文字列判例してしまう
         df["target_month"] = pd.to_datetime(df["target_month"])
+        #計算に使いたい場合は数字系もしっかりint変換しておく
+        df["total_point"] = df["total_point"].astype(int)
+
         fig = plt.figure()
         ax = fig.add_subplot(1, 1, 1)
         
         ax.plot(df["target_month"], df.total_point)
 
+
+        #X軸について
         #日付出力方式を検討
         daysFmt = mdates.DateFormatter('%Y-%m')
         ax.xaxis.set_major_formatter(daysFmt)
         #いい感じにラベルを回転させてくれる
         fig.autofmt_xdate()
-        
         #ちなみに具体的な回転率を指定したい時
         #plt.xticks(rotation=90)
+
+        #y軸について
+        #上限、下限を意識的にとりたい時　0 〜　最大値の1.2倍
+        ax.set_ylim(0, df.total_point.max()*1.2)
+        #縦軸で〜
+        ax.yaxis.set_major_formatter(FuncFormatter(self.major_formatter))
 
         #plt.plot(df.index, df.total_point, label = "total revenue")
         #plt.plot(df.index, model_lr.predict(df.index.to_numpy().reshape(-1, 1)), linestyle="solid")
         #plt.legend()
 
         plt.savefig('images/all_img.png')
+
+    def major_formatter(self, x, pos):
+        unit = int(x/10000)
+        return str(unit) + "MP"
 
     def memberCheck(self):
 
