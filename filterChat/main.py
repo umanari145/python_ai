@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 import pandas as pd
 import database
 import analysis
+import analysisDate
 
 # .envファイルの内容を読み込みます
 load_dotenv()
@@ -14,7 +15,11 @@ db = database.database({
     'DB_USER' : os.environ['DB_USER'],
     'DB_PASS' : os.environ['DB_PASS']
 })
-ana = analysis.analysis(db)
+
+anaDate = analysisDate.analysisDate(db)
+anaDate.rewardsCheck()
+#anaDate.sample()
+#ana = analysis.analysis(db)
 #ana.rewardsCheck()
 #ana.memberCheck()
-ana.oligopoly()
+#ana.oligopoly()
