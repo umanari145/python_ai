@@ -16,10 +16,10 @@ db = database.database({
     'DB_PASS' : os.environ['DB_PASS']
 })
 
-anaDate = analysisDate.analysisDate(db)
-anaDate.rewardsCheck()
+#anaDate = analysisDate.analysisDate(db)
+#anaDate.rewardsCheck()
 #anaDate.sample()
-#ana = analysis.analysis(db)
+ana = analysis.analysis(db)
 #ana.rewardsCheck()
 #ana.memberCheck()
-#ana.oligopoly()
+ana.oligopoly()

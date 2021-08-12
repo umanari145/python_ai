@@ -5,3 +5,5 @@ matplotlib
 python-dotenv
 mysql-connector
 sqlalchemy
+statsmodels
+requests
