@@ -4,6 +4,11 @@
 
 https://github.com/ghmagazine/python_stat_sample
 
+## 開始時の読み込み
+```
+source script
+```
+
 ## ライブラリインストール
 ```
 pip install -r requirements.txt
