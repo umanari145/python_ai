@@ -49,9 +49,12 @@ class main:
         #product_sales_data_byday = product_sales_data.groupby("日付").sum()["売上"].reset_index()
         #total_sales_calendar_data = pd.merge(self.calendar_data, product_sales_data_byday, on = "日付")
         #print(total_sales_calendar_data)
-        product_sales_data["月"] = product_sales_data["日付"].apply(lambda x : int(x.split("-")[1]))
+        #product_sales_data["月"] = product_sales_data["日付"].apply(lambda x : int(x.split("-")[1]))
         #日付データと商品コードのマージ
         product_sales_calendar_data = pd.merge(self.calendar_data, product_sales_data, on="日付", how="left")
+
+        print(product_sales_calendar_data)
+        exit()
         #トータル売上
         return product_sales_calendar_data
 
@@ -74,9 +77,9 @@ class main:
         calendar_data.drop("最大風速(風向)", axis=1, inplace=True);
         #平均気温がnullに対して下記のように計算(filter+map)
         calendar_data.loc[calendar_data["平均気温(℃)"].isnull(), "平均気温(℃)"] = (calendar_data["最高気温(℃)"] + calendar_data["最低気温(℃)"]) / 2 
+        #販売個数がnullの場合,drop(モデル作成時のみ)
+        #calendar_data.dropna(subset=["販売個数"], inplace=True)
 
-        #販売個数がnullの場合,drop
-        calendar_data.dropna(subset=["販売個数"], inplace=True)
         return calendar_data
     
     def makeModel(self, calendar_data):
@@ -90,7 +93,18 @@ class main:
                 self.predictSales(product_name, train_data, test_data)
 
 
+    def dropOutlier(self, calendar_data):
+        q3 = calendar_data["販売個数"].quantile(0.75)
+        q1 = calendar_data["販売個数"].quantile(0.25)
+        iqr = q3 - q1
+
+        bottom_value = q1 - (1.5 * iqr)
+        top_value = q3 + (1.5 * iqr)
+        calendar_data = calendar_data[(calendar_data["販売個数"]>=bottom_value ) & (calendar_data["販売個数"]<=top_value)]
+        return calendar_data
+
     def predictSales(self, product_name, train_data, test_data):
+
         if (product_name == "ワイン"):
             #case1
             #val_columns = ["曜日_金", "曜日_土", "曜日_日", "平均気温(℃)", "月_7.0"]
@@ -130,14 +144,13 @@ class main:
 
 
     def plotting(self, calendar_data):
-
         #月ごとの商品ごとの販売数
         #self.calcRevenue(calendar_data)
         productNameArr = set(calendar_data["商品名"].values)
         for productName in productNameArr:
-            self.productCountByProduct(calendar_data, productName)
-            #self.scatterGraph(calendar_data, productName)
-            #self.saveProductImage(calendar_data, productName)
+            #self.productCountByProduct(calendar_data, productName)
+            self.scatterGraph(calendar_data, productName)
+            self.saveProductImage(calendar_data, productName)
             #self.montlyReport(calendar_data, productName)
 
 
@@ -213,10 +226,17 @@ class main:
     #商品ごとの分布図の出力
     def scatterGraph(self, calendar_data, product_name):
 
+        print(calendar_data)
         product_sale = calendar_data[calendar_data["商品名"] == product_name]
+        print(len(product_sale))
         if (len(product_sale) == 0):
             return None
 
+        print(product_sale)
+        exit()
+        product_sale = self.dropOutlier(product_sale)
+        print(product_sale)
+        exit()
         fig = plt.figure()
 
         print("商品名:", product_name)
@@ -248,6 +268,9 @@ class main:
         product_sale = calendar_data[calendar_data["商品名"] == product_name]
         if (len(product_sale) == 0):
             return None
+
+        product_sale = self.dropOutlier(product_sale)
+
         #ヒストグラム
         #trend_p1["販売個数"].hist(bins=20);
         #plt.savefig('images/product_1_histogram.png')
@@ -266,5 +289,13 @@ class main:
 
 
 m = main()
-total_calendar_data = m.dataProcessing()
-m.makeModel(total_calendar_data)
+
+#pd.set_option('display.max_rows', None)
+pd.set_option('display.max_columns', None)
+
+test_sales_data = m.mergeData(m.sales_test_data)
+test_sales_data = m.processMissingValue(test_sales_data)
+m.plotting(test_sales_data)
+
+#total_calendar_data = m.dataProcessing()
+#m.makeModel(total_calendar_data)
