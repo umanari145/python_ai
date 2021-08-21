@@ -49,12 +49,10 @@ class main:
         #product_sales_data_byday = product_sales_data.groupby("日付").sum()["売上"].reset_index()
         #total_sales_calendar_data = pd.merge(self.calendar_data, product_sales_data_byday, on = "日付")
         #print(total_sales_calendar_data)
-        #product_sales_data["月"] = product_sales_data["日付"].apply(lambda x : int(x.split("-")[1]))
+        product_sales_data["月"] = product_sales_data["日付"].apply(lambda x : int(x.split("-")[1]))
         #日付データと商品コードのマージ
         product_sales_calendar_data = pd.merge(self.calendar_data, product_sales_data, on="日付", how="left")
 
-        print(product_sales_calendar_data)
-        exit()
         #トータル売上
         return product_sales_calendar_data
 
@@ -88,8 +86,8 @@ class main:
         for product_name in product_name_arr:
             train_data = calendar_data[(calendar_data["商品名"] == product_name ) & (calendar_data["data_flag"] == 1)]
             test_data = calendar_data[(calendar_data["商品名"] == product_name ) & (calendar_data["data_flag"] == 0)]
-    
-            if (len(train_data) >= 0 & len(test_data) >= 0):
+
+            if ((product_name is np.nan) == False & len(train_data) >= 0 & len(test_data) >= 0):
                 self.predictSales(product_name, train_data, test_data)
 
 
@@ -107,16 +105,16 @@ class main:
 
         if (product_name == "ワイン"):
             #case1
-            #val_columns = ["曜日_金", "曜日_土", "曜日_日", "平均気温(℃)", "月_7.0"]
+            val_columns = ["曜日_金", "曜日_土", "曜日_日", "平均気温(℃)", "月_7.0"]
             #case2
-            #val_columns = ["曜日_金", "曜日_土", "曜日_日", "平均気温(℃)", "月_7.0", "休日", "天気_晴", "天気_曇", "天気_雨"]
+            val_columns = ["曜日_金", "曜日_土", "曜日_日", "平均気温(℃)", "月_7.0", "休日", "天気_晴", "天気_曇", "天気_雨"]
             #case3
             val_columns = ["休日", "平均気温(℃)", "月_7.0"]
         else:
             #case1
-            #val_columns = ["曜日_金", "曜日_土", "曜日_日", "平均気温(℃)"]
+            val_columns = ["曜日_金", "曜日_土", "曜日_日", "平均気温(℃)"]
             #case2
-            #val_columns = ["曜日_金", "曜日_土", "曜日_日", "平均気温(℃)", "月_7.0", "休日", "天気_晴", "天気_曇", "天気_雨"]
+            val_columns = ["曜日_金", "曜日_土", "曜日_日", "平均気温(℃)", "月_7.0", "休日", "天気_晴", "天気_曇", "天気_雨"]
             #case3
             val_columns = ["休日", "平均気温(℃)", "月_7.0"]
 
@@ -125,7 +123,7 @@ class main:
         # テストデータに入っている正解値
         y_train = train_data["販売個数"]
 
-        self.monthlyPlot(train_data, product_name)
+        #self.monthlyPlot(train_data, product_name)
 
         linear = LR()
         linear.fit(x_train, y_train)
@@ -226,17 +224,11 @@ class main:
     #商品ごとの分布図の出力
     def scatterGraph(self, calendar_data, product_name):
 
-        print(calendar_data)
         product_sale = calendar_data[calendar_data["商品名"] == product_name]
-        print(len(product_sale))
         if (len(product_sale) == 0):
             return None
-
-        print(product_sale)
-        exit()
         product_sale = self.dropOutlier(product_sale)
-        print(product_sale)
-        exit()
+
         fig = plt.figure()
 
         print("商品名:", product_name)
@@ -293,9 +285,9 @@ m = main()
 #pd.set_option('display.max_rows', None)
 pd.set_option('display.max_columns', None)
 
-test_sales_data = m.mergeData(m.sales_test_data)
-test_sales_data = m.processMissingValue(test_sales_data)
-m.plotting(test_sales_data)
+#test_train_data = m.mergeData(m.sales_train_data)
+#test_train_data = m.processMissingValue(test_train_data)
+#m.plotting(test_train_data)
 
-#total_calendar_data = m.dataProcessing()
-#m.makeModel(total_calendar_data)
+total_calendar_data = m.dataProcessing()
+m.makeModel(total_calendar_data)
