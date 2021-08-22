@@ -114,9 +114,9 @@ class main:
             #case1
             val_columns = ["曜日_金", "曜日_土", "曜日_日", "平均気温(℃)"]
             #case2
-            val_columns = ["曜日_金", "曜日_土", "曜日_日", "平均気温(℃)", "月_7.0", "休日", "天気_晴", "天気_曇", "天気_雨"]
+            val_columns = ["曜日_金", "曜日_土", "曜日_日", "平均気温(℃)", "休日", "天気_晴", "天気_曇", "天気_雨"]
             #case3
-            val_columns = ["休日", "平均気温(℃)", "月_7.0"]
+            val_columns = ["休日", "平均気温(℃)"]
 
         #pd.set_option('display.max_columns', None)
         x_train = train_data[val_columns]
@@ -270,7 +270,7 @@ class main:
         #trend_p1.to_csv('trend_p1.csv', index=False)
         fig, ax = plt.subplots(1,5, figsize=(20,5))
         # 箱ひげ図は「boxplot」を使う
-        keyWordArr = ["給料日", "休日", "六輝", "曜日", "天気概況(夜：18時～翌日06時)"]
+        keyWordArr = ["給料日", "休日", "六輝", "曜日","天気概況(夜：18時～翌日06時)"]
         index = 0
         for keyword in keyWordArr:
             sns.boxplot(x=keyword, y="販売個数", data=product_sale, ax=ax[index])
