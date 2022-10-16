@@ -19,6 +19,9 @@ pip install -r requirements.txt
 - lesson1 イントロ
 - lesson2 一次元データの整理
 - contents.md 機械学習のメモ
+- kikagaku01.ipynb キカガク〜のサンプル
+- zerokara_data.ipynb ゼロから〜のサンプル
+- zerokara_data_case01.ipynb ゼロ〜のケーススタディのサンプル
 - fileterChat
     - main.py コントローラー的でここから呼び出す
     - database.py DB接続とselect文の抽出
